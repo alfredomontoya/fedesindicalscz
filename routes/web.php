@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CondolenciaController;
+use App\Http\Controllers\CumpleController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -16,4 +17,7 @@ Route::resource('condolencias', CondolenciaController::class)
     ->middleware(['auth'])
     ->names('condolencias');
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('cumples', CumpleController::class);
+});
 require __DIR__.'/settings.php';

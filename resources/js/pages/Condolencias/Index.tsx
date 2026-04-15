@@ -1,7 +1,7 @@
-import ModalGenerarImagen from '@/components/ModalGenerarImagen';
 import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { useState } from 'react';
+import ModalGenerarImagenCondolencia from './../../components/ModalGenerarImagenCondolencia';
 
 type Condolencia = {
   id: number;
@@ -112,7 +112,7 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
 
         {/* MODAL */}
         {selected && (
-          <ModalGenerarImagen
+          <ModalGenerarImagenCondolencia
             data={selected}
             orientation={orientation}
             onClose={() => setSelected(null)}

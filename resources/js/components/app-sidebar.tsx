@@ -27,6 +27,11 @@ const mainNavItems: NavItem[] = [
         href: '/condolencias',
         icon: HeartHandshake,
     },
+    {
+        title: 'Cumpleaños',
+        href: '/cumples',
+        icon: HeartHandshake,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
