@@ -28,7 +28,7 @@ export default function Index({ cumples }: { cumples: Cumple[] }) {
   };
 
   return (
-    <AppLayout>
+    <>
       <Head title="Cumpleaños" />
 
       <div className="p-6">
@@ -127,6 +127,16 @@ export default function Index({ cumples }: { cumples: Cumple[] }) {
         )}
 
       </div>
-    </AppLayout>
+    </>
   );
 }
+
+Index.layout = {
+    breadcrumbs: [
+        {
+            title: 'Cumpleaños',
+            href: '/cumples',
+        },
+    ],
+};
+

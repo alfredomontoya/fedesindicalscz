@@ -1,5 +1,4 @@
 import { Head, Link, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
 import { useState } from 'react';
 import ModalGenerarImagenCondolencia from './../../components/ModalGenerarImagenCondolencia';
 
@@ -27,7 +26,7 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
   };
 
   return (
-    <AppLayout>
+    <>
       <Head title="Condolencias" />
 
       <div className="p-6">
@@ -120,6 +119,15 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
         )}
 
       </div>
-    </AppLayout>
+    </>
   );
 }
+
+Index.layout = {
+    breadcrumbs: [
+        {
+            title: 'Condolencias',
+            href: '/condolencias',
+        },
+    ],
+};
