@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { useForm } from '@inertiajs/react';
 
 type Props = {
@@ -11,7 +12,9 @@ export default function Form({ initial, submitUrl, method = 'post' }: Props) {
   const { data, setData, post, put, processing } = useForm({
     tratamiento: initial?.tratamiento ?? '',
     nombre: initial?.nombre ?? '',
-    fecha_nacimiento: initial?.fecha_nacimiento ?? '',
+    fecha_nacimiento: initial?.fecha_nacimiento
+        ? new Date(initial.fecha_nacimiento).toISOString().split('T')[0]
+        : '',
   });
 
   const submit = (e: any) => {
@@ -48,12 +51,12 @@ export default function Form({ initial, submitUrl, method = 'post' }: Props) {
         onChange={(e) => setData('fecha_nacimiento', e.target.value)}
       />
 
-      <button
+      <Button
         disabled={processing}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        variant={'default'}
       >
         Guardar
-      </button>
+      </Button>
 
     </form>
   );

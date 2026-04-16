@@ -1,12 +1,21 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import ModalGenerarImagenCondolencia from './../../components/ModalGenerarImagenCondolencia';
+import { Button } from '@/components/ui/button';
+import { Pencil, RectangleVertical, RectangleHorizontal } from 'lucide-react';
 
 type Condolencia = {
   id: number;
   tratamiento: string;
   nombre: string;
   fecha: string;
+  created_at: string;
+  user_id: number | null;
+  user: {
+      id: number;
+      name: string;
+      email: string;
+  } | null;
 };
 
 export default function Index({ condolencias }: { condolencias: Condolencia[] }) {
@@ -34,12 +43,12 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
         <div className="flex justify-between mb-6">
           <h1 className="text-2xl font-bold">Condolencias</h1>
 
-          <Link
-            href="/condolencias/create"
-            className="bg-green-600 text-white px-4 py-2 rounded"
-          >
+          <Button
+            variant={'default'}
+            onClick={() => router.visit('/condolencias/create')}
+            >
             Nuevo
-          </Link>
+          </Button>
         </div>
 
         <div className="overflow-x-auto rounded shadow">
@@ -49,6 +58,7 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
               <tr>
                 <th className="p-3 text-left">Nombre</th>
                 <th className="p-3 text-left">Fecha</th>
+                <th className="p-3 text-left">Creacion</th>
                 <th className="p-3 text-center">Generar</th>
                 <th className="p-3 text-center">Acciones</th>
               </tr>
@@ -65,40 +75,61 @@ export default function Index({ condolencias }: { condolencias: Condolencia[] })
                   <td className="p-3">
                     {new Date(c.fecha).toLocaleDateString()}
                   </td>
+                  <td className="p-3">
+                    {new Date(c.created_at).toLocaleDateString()}
+                    {c.user && (
+                      <div className="text-xs text-gray-500">
+                        (ID usuario: {c.user.name})
+                      </div>
+                    )}
+                  </td>
 
                   <td className="p-3 text-center space-x-2">
 
-                    <button
+                    <Button
+                    variant={'default'}
+                        size={'sm'}
                       onClick={() => abrirModal(c, 'vertical')}
-                      className="bg-blue-600 text-white px-3 py-1 rounded"
-                    >
-                      Vertical
-                    </button>
 
-                    <button
-                      onClick={() => abrirModal(c, 'horizontal')}
-                      className="bg-purple-600 text-white px-3 py-1 rounded"
                     >
-                      Horizontal
-                    </button>
+                      <RectangleVertical size={18} /> Vertical
+                    </Button>
+
+                    <Button
+                    variant={'default'}
+                        size={'sm'}
+                      onClick={() => abrirModal(c, 'horizontal')}
+
+                    >
+                      <RectangleHorizontal size={18} /> Horizontal
+                    </Button>
 
                   </td>
 
                   <td className="p-3 text-center space-x-2">
 
-                    <Link
+                    {/* <Link
                       href={`/condolencias/${c.id}/edit`}
                       className="text-blue-600 hover:underline"
                     >
                       Editar
-                    </Link>
+                    </Link> */}
 
-                    <button
+                    <Button
+                      variant="default"
+                      size={'sm'}
+                      onClick={() => router.visit(`/condolencias/${c.id}/edit`)}
+                    >
+                      <Pencil size={18} />
+                      Editar
+                    </Button>
+
+                    {/* <button
                       onClick={() => eliminar(c.id)}
                       className="text-red-600 hover:underline"
                     >
                       Eliminar
-                    </button>
+                    </button> */}
 
                   </td>
 

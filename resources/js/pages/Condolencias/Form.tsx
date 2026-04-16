@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { useForm } from '@inertiajs/react';
 
 type Props = {
@@ -10,7 +11,9 @@ export default function Form({ initialData, url, method = 'post' }: Props) {
   const { data, setData, post, put, processing, errors } = useForm({
     tratamiento: initialData?.tratamiento || 'Sr',
     nombre: initialData?.nombre || '',
-    fecha: initialData?.fecha || '',
+    fecha: initialData?.fecha
+        ? new Date(initialData.fecha).toISOString().split('T')[0]
+        : '',
   });
 
   const submit = (e: any) => {
@@ -28,8 +31,8 @@ export default function Form({ initialData, url, method = 'post' }: Props) {
           onChange={e => setData('tratamiento', e.target.value)}
           className="border p-2 w-full rounded"
         >
-          <option value="Sr">Sr</option>
-          <option value="Sra">Sra</option>
+          <option value="Sr" className='text-black' >Sr</option>
+          <option value="Sra" className='text-black'>Sra</option>
         </select>
         {errors.tratamiento && <div className="text-red-500">{errors.tratamiento}</div>}
       </div>
@@ -55,13 +58,13 @@ export default function Form({ initialData, url, method = 'post' }: Props) {
         {errors.fecha && <div className="text-red-500">{errors.fecha}</div>}
       </div>
 
-      <button
+      <Button
+        variant={'default'}
         type="submit"
         disabled={processing}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
       >
         Guardar
-      </button>
+      </Button>
     </form>
   );
 }

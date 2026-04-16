@@ -11,7 +11,7 @@ class CumpleController extends Controller
     public function index()
     {
         return Inertia::render('Cumples/Index', [
-            'cumples' => Cumple::latest()->get()
+            'cumples' => Cumple::with('user')->latest()->get()
         ]);
     }
 

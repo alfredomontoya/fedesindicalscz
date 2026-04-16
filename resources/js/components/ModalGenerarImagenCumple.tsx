@@ -143,7 +143,7 @@ export default function ModalGenerarImagenCumple({ data, orientation, onClose }:
                 ref={previewRef}
                 nombre={data.nombre}
                 tratamiento={data.tratamiento}
-                fecha={data.fecha}
+                fecha={data.created_at}
                 orientation={orientation}
               />
             </div>

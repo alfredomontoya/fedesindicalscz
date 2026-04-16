@@ -23,3 +23,12 @@ export default function Create() {
     </>
   );
 }
+
+Create.layout = {
+    breadcrumbs: [
+        {
+            title: 'Condolencias/Crear',
+            href: '/condolencias',
+        },
+    ],
+};

@@ -20,7 +20,7 @@ const CumpleCard = forwardRef<HTMLDivElement, Props>(
       vertical: {
         top: 900,
         fontSize: 110,
-        fechaBottom: 200,
+        fechaBottom: 150,
       },
       horizontal: {
         top: 1320,

@@ -24,7 +24,7 @@ class CondolenciaController extends BaseController
      */
     public function index()
     {
-        $condolencias = Condolencia::where('user_id', auth()->id())
+        $condolencias = Condolencia::with('user')->where('user_id', auth()->id())
             ->latest()
             ->get();
 

@@ -2,13 +2,25 @@ import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { useState } from 'react';
 import ModalGenerarImagenCumple from '@/components/ModalGenerarImagenCumple';
+import { create } from './../../actions/Laravel/Fortify/Http/Controllers/AuthenticatedSessionController';
+import { Button } from '@/components/ui/button';
+import { Pencil, RectangleVertical, RectangleHorizontal } from 'lucide-react';
+
+type User = {
+    id: number;
+    name: string;
+    email: string;
+}
 
 type Cumple = {
   id: number;
   user_id: number;
+  user: User;
   tratamiento: string;
   nombre: string;
   fecha_nacimiento: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export default function Index({ cumples }: { cumples: Cumple[] }) {
@@ -39,12 +51,12 @@ export default function Index({ cumples }: { cumples: Cumple[] }) {
             Cumpleaños
           </h1>
 
-          <Link
-            href="/cumples/create"
-            className="bg-green-600 text-white px-4 py-2 rounded"
-          >
+          <Button
+            variant={'default'}
+            onClick={() => router.visit('/cumples/create')}
+            >
             Nuevo
-          </Link>
+          </Button>
         </div>
 
         {/* TABLE */}
@@ -55,6 +67,7 @@ export default function Index({ cumples }: { cumples: Cumple[] }) {
               <tr className="border-b">
                 <th className="p-3 text-left">Nombre</th>
                 <th className="p-3 text-left">Fecha de nacimiento</th>
+                <th className="p-3 text-left">Creacion</th>
                 <th className="p-3 text-center">Generar</th>
                 <th className="p-3 text-center">Acciones</th>
               </tr>
@@ -72,41 +85,59 @@ export default function Index({ cumples }: { cumples: Cumple[] }) {
                     {new Date(c.fecha_nacimiento).toLocaleDateString()}
                   </td>
 
+                  <td className="p-3">
+                    {new Date(c.created_at).toLocaleDateString()} <br />
+                    {c.user_id && (
+                      <span className="text-xs text-gray-500">
+                        (ID usuario: {c.user.name})
+                      </span>
+                    )}
+                  </td>
+
                   {/* BOTONES GENERAR */}
                   <td className="p-3 text-center space-x-2">
 
-                    <button
+                    <Button
                       onClick={() => abrirModal(c, 'vertical')}
-                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      variant={'default'}
+                      size={'sm'}
                     >
-                      Vertical
-                    </button>
+                      <RectangleVertical size={18} /> Vertical
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => abrirModal(c, 'horizontal')}
-                      className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
+                      variant={'default'}
+                      size={'sm'}
                     >
-                      Horizontal
-                    </button>
+                      <RectangleHorizontal size={18} /> Horizontal
+                    </Button>
 
                   </td>
 
                   {/* ACCIONES */}
                   <td className="p-3 text-center space-x-2">
 
-                    <Link
+                    {/* <Link
                       href={`/cumples/${c.id}/edit`}
                       className="text-blue-600 hover:underline"
                     >
                       Editar
-                    </Link>
+                    </Link> */}
+                    <Button
+                        variant="default"
+                        onClick={ () => router.visit(`/cumples/${c.id}/edit`) }
+                        size={'sm'}
+                        >
+                          <Pencil size={18} /> Editar
+                        </Button>
 
-                    <button
+                    {/* <button
                       onClick={() => eliminar(c.id)}
                       className="text-red-600 hover:underline"
                     >
                       Eliminar
-                    </button>
+                    </button> */}
 
                   </td>
 

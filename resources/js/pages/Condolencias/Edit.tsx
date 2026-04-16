@@ -1,5 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import Form from './Form';
+import { Button } from '@/components/ui/button';
 
 export default function Edit({ condolencia }: any) {
   return (
@@ -16,14 +17,24 @@ export default function Edit({ condolencia }: any) {
           url={`/condolencias/${condolencia.id}`}
           method="put"
         />
+        <br />
+        <Button
+            variant={'secondary'}
+          onClick={ () => router.visit('/condolencias')}
 
-        <Link
-          href="/condolencias"
-          className="inline-block mt-4 text-gray-600"
         >
           ← Volver
-        </Link>
+        </Button>
       </div>
     </>
   );
 }
+
+Edit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Condolencias/Editar',
+            href: '/condolencias',
+        },
+    ],
+};

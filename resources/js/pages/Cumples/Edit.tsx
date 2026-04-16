@@ -1,11 +1,12 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import Form from './Form';
+import { Button } from '@/components/ui/button';
 
 export default function Edit({ cumple }: any) {
 
   return (
-    <AppLayout>
+    <>
       <Head title="Editar Cumple" />
 
       <div className="p-6">
@@ -19,12 +20,24 @@ export default function Edit({ cumple }: any) {
         />
 
         <div className="mt-4">
-          <Link href="/cumples" className="text-gray-600">
-            Volver
-          </Link>
+          <Button
+            variant={'secondary'}
+            onClick={() => router.visit('/cumples')}
+          >
+            ← Volver
+          </Button>
         </div>
 
       </div>
-    </AppLayout>
+    </>
   );
 }
+
+Edit.layout = {
+    breadcrumbs: [
+        {
+            title: 'Cumples/Editar',
+            href: '/cumples/',
+        },
+    ],
+};

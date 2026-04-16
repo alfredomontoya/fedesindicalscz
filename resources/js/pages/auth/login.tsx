@@ -35,7 +35,7 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Usuario</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -51,8 +51,8 @@ export default function Login({
 
                             <div className="grid gap-2">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
+                                    <Label htmlFor="password">Contraseña</Label>
+                                    {/* {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm"
@@ -60,7 +60,7 @@ export default function Login({
                                         >
                                             Forgot password?
                                         </TextLink>
-                                    )}
+                                    )} */}
                                 </div>
                                 <PasswordInput
                                     id="password"
@@ -73,14 +73,14 @@ export default function Login({
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            {/* <div className="flex items-center space-x-3">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
                                 />
                                 <Label htmlFor="remember">Remember me</Label>
-                            </div>
+                            </div> */}
 
                             <Button
                                 type="submit"
@@ -90,18 +90,18 @@ export default function Login({
                                 data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Log in
+                                Ingresar
                             </Button>
                         </div>
 
-                        {canRegister && (
+                        {/* {canRegister && (
                             <div className="text-center text-sm text-muted-foreground">
                                 Don't have an account?{' '}
                                 <TextLink href={register()} tabIndex={5}>
                                     Sign up
                                 </TextLink>
                             </div>
-                        )}
+                        )} */}
                     </>
                 )}
             </Form>
@@ -116,6 +116,6 @@ export default function Login({
 }
 
 Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
+    title: 'Ingrese a su cuenta',
+    description: 'Ingrese su email y contraseña para acceder a su cuenta.',
 };
