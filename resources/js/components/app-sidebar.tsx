@@ -23,13 +23,8 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Condolencias',
-        href: '/condolencias',
-        icon: HeartHandshake,
-    },
-    {
-        title: 'Cumpleaños',
-        href: '/cumples',
+        title: 'Publicaciones',
+        href: '/publications',
         icon: HeartHandshake,
     },
 ];
