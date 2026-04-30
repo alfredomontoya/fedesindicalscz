@@ -32,6 +32,16 @@ const mainNavItems: NavItem[] = [
         href: '/type-publications',
         icon: BookOpen,
     },
+    {
+        title: 'Usuarios',
+        href: '/users',
+        icon: BookOpen,
+    },
+    {
+        title: 'Roles',
+        href: '/roles',
+        icon: BookOpen,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

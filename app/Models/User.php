@@ -31,4 +31,36 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    /**
+     * Relación muchos-a-muchos con roles
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    /**
+     * Verificar si el usuario tiene un rol específico
+     */
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('nombre', $roleName)->exists();
+    }
+
+    /**
+     * Verificar si el usuario es administrador
+     */
+    public function isAdmin()
+    {
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Obtener todos los roles como array de nombres
+     */
+    public function getRoleNames()
+    {
+        return $this->roles()->pluck('nombre')->toArray();
+    }
 }
