@@ -42,7 +42,9 @@ class PublicationController extends BaseController
      */
     public function create()
     {
-        return Inertia::render('Publications/Create');
+        return Inertia::render('Publications/Create', [
+            'institutions' => \App\Models\Institution::select(['id', 'nombre'])->get(),
+        ]);
     }
 
     /**
@@ -100,6 +102,7 @@ class PublicationController extends BaseController
         $this->authorizeUser($publication);
 
         return Inertia::render('Publications/Edit', [
+            'institutions' => \App\Models\Institution::select(['id', 'nombre'])->get(),
             'publication' => $publication
         ]);
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\TypePublicationController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -15,6 +16,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::resource('publications', PublicationController::class)
     ->middleware(['auth'])
     ->names('publications');
+
+Route::resource('type-publications', TypePublicationController::class)
+    ->middleware(['auth'])
+    ->names('type-publications');
 
 Route::get('/api/publications/{id}', [PublicationController::class, 'showApi'])->middleware(['auth']);
 

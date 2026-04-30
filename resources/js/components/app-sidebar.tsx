@@ -27,6 +27,11 @@ const mainNavItems: NavItem[] = [
         href: '/publications',
         icon: HeartHandshake,
     },
+    {
+        title: 'Tipos de Publicación',
+        href: '/type-publications',
+        icon: BookOpen,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

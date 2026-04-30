@@ -19,7 +19,8 @@ export default function ModalGenerarImagen({
   onClose,
 }: Props) {
 
-  const renderRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const isVertical = orientation === 'vertical';
@@ -31,8 +32,34 @@ export default function ModalGenerarImagen({
   // 👁 escala SOLO para PREVIEW
   const previewScale = isVertical ? 0.25 : 0.18;
 
-  const previewWidth = realWidth * previewScale;
-  const previewHeight = realHeight * previewScale;
+  const [windowSize, setWindowSize] = useState<{
+    width: number;
+    height: number;
+  }>(() =>
+    typeof window !== 'undefined'
+      ? { width: window.innerWidth, height: window.innerHeight }
+      : { width: 1024, height: 768 }
+  );
+
+  useEffect(() => {
+    const handleResize = () =>
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const availableWidth = Math.max(windowSize.width - 48, 160);
+  const availableHeight = Math.max(windowSize.height - 160, 160);
+
+  const effectivePreviewScale = Math.min(
+    previewScale,
+    Math.max(availableWidth / realWidth, 0.12),
+    Math.max(availableHeight / realHeight, 0.12)
+  );
+
+  const previewWidth = realWidth * effectivePreviewScale;
+  const previewHeight = realHeight * effectivePreviewScale;
 
   const [publication, setPublication] = useState<Publication>(data);
   const [loading, setLoading] = useState(false);
@@ -106,14 +133,16 @@ export default function ModalGenerarImagen({
 
   // 📥 DESCARGAR
   const generar = async () => {
-    if (!renderRef.current) return;
+    if (!exportRef.current) return;
+
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
 
     try {
       await waitForFonts();
-      await waitForImages(renderRef.current);
+      await waitForImages(exportRef.current);
 
-      const canvas = await html2canvas(renderRef.current, {
-        scale: window.devicePixelRatio,
+      const canvas = await html2canvas(exportRef.current, {
+        scale,
         useCORS: true,
         backgroundColor: '#ffffff',
       });
@@ -134,14 +163,16 @@ export default function ModalGenerarImagen({
 
   // 📱 WHATSAPP
   const compartirWhatsApp = async () => {
-    if (!renderRef.current) return;
+    if (!exportRef.current) return;
+
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
 
     try {
       await waitForFonts();
-      await waitForImages(renderRef.current);
+      await waitForImages(exportRef.current);
 
-      const canvas = await html2canvas(renderRef.current, {
-        scale: window.devicePixelRatio,
+      const canvas = await html2canvas(exportRef.current, {
+        scale,
         useCORS: true,
         backgroundColor: '#ffffff',
       });
@@ -156,16 +187,31 @@ export default function ModalGenerarImagen({
         type: 'image/png',
       });
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'Publicación',
-          text: `Publicación de ${data.tratamiento} ${data.nombre}`,
-        });
-      } else {
-        const texto = `Publicación de ${data.tratamiento} ${data.nombre}`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
+      const whatsappText = `Publicación de ${data.tratamiento} ${data.nombre}`;
+      const shareData: ShareData & { files?: File[] } = {
+        title: 'Publicación',
+        text: whatsappText,
+        files: [file],
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (error) {
+          console.warn('Web Share con archivo no soportado:', error);
+        }
       }
+
+      alert(
+        'No es posible compartir la imagen directamente desde este navegador. Se descargará la imagen para que puedas compartirla manualmente en WhatsApp.'
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file.name;
+      link.click();
 
     } catch (error) {
       console.error('Error compartiendo:', error);
@@ -188,7 +234,7 @@ export default function ModalGenerarImagen({
       {/* MODAL */}
       <div
         ref={modalRef}
-        className="bg-muted-foreground rounded-lg p-4 relative inline-block"
+        className="bg-muted-foreground rounded-lg p-4 relative inline-block w-auto max-w-[95vw] sm:max-w-[90vw] max-h-[90vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -212,18 +258,21 @@ export default function ModalGenerarImagen({
               width: previewWidth,
               height: previewHeight,
               overflow: 'hidden',
+              maxWidth: '100%',
+              maxHeight: '100%',
+              margin: '0 auto',
             }}
           >
             <div
               style={{
-                transform: `scale(${previewScale})`,
+                transform: `scale(${effectivePreviewScale})`,
                 transformOrigin: 'top left',
                 width: realWidth,
                 height: realHeight,
               }}
             >
               <ImagenCard
-                ref={renderRef}
+                ref={previewRef}
                 publication={publication}
                 orientation={orientation}
               />
@@ -239,7 +288,7 @@ export default function ModalGenerarImagen({
                 onMouseLeave={(e) => (e.currentTarget.style.width = '48px')}
                 onClick={generar}
             >
-                <div className="w-12 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 flex items-center justify-center shrink-0">
                     <Download size={20} />
                 </div>
                 <span className="pr-4 whitespace-nowrap">
@@ -253,7 +302,7 @@ export default function ModalGenerarImagen({
                 onMouseLeave={(e) => (e.currentTarget.style.width = '48px')}
                 onClick={compartirWhatsApp}
             >
-                <div className="w-12 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 flex items-center justify-center shrink-0">
                     <FaWhatsapp size={20} />
                 </div>
                 <span className="pr-4 whitespace-nowrap">
@@ -277,7 +326,7 @@ export default function ModalGenerarImagen({
           }}
         >
           <ImagenCard
-            ref={renderRef}
+            ref={exportRef}
             publication={publication}
             orientation={orientation}
           />
