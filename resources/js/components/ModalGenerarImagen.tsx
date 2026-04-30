@@ -188,30 +188,41 @@ export default function ModalGenerarImagen({
       });
 
       const whatsappText = `Publicación de ${data.tratamiento} ${data.nombre}`;
-      const shareData: ShareData & { files?: File[] } = {
-        title: 'Publicación',
-        text: whatsappText,
-        files: [file],
-      };
 
       if (navigator.share) {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Publicación',
+              text: whatsappText,
+            });
+            return;
+          } catch (error) {
+            console.warn('Web Share con archivo no soportado:', error);
+          }
+        }
+
         try {
-          await navigator.share(shareData);
+          await navigator.share({
+            title: 'Publicación',
+            text: whatsappText,
+          });
           return;
         } catch (error) {
-          console.warn('Web Share con archivo no soportado:', error);
+          console.warn('Web Share solo texto no soportado:', error);
         }
       }
 
-      alert(
-        'No es posible compartir la imagen directamente desde este navegador. Se descargará la imagen para que puedas compartirla manualmente en WhatsApp.'
-      );
+      const encodedText = encodeURIComponent(whatsappText);
+      const mobileLink = `whatsapp://send?text=${encodedText}`;
+      const webLink = `https://wa.me/?text=${encodedText}`;
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = file.name;
-      link.click();
+      if (/Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        window.location.href = mobileLink;
+      } else {
+        window.open(webLink, '_blank');
+      }
 
     } catch (error) {
       console.error('Error compartiendo:', error);
