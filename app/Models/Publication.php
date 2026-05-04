@@ -43,5 +43,11 @@ class Publication extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            $query->where('nombre', 'like', "%{$search}%");
+        }
+    }
 
 }

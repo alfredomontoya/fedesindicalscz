@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Pencil, RectangleVertical, RectangleHorizontal } from 'lucide-react';
 import ModalGenerarImagen from '@/components/ModalGenerarImagen';
 import { Publication } from '@/types/publication';
+import { Paginated } from '@/types/Paginated';
 
 
-export default function Index({ publications }: { publications: Publication[] }) {
+export default function Index({ publications }: { publications: Paginated<Publication> }) {
 
   const [selected, setSelected] = useState<Publication | null>(null);
   const [orientation, setOrientation] = useState<'vertical' | 'horizontal'>('vertical');
@@ -54,7 +55,7 @@ export default function Index({ publications }: { publications: Publication[] })
             </thead>
 
             <tbody>
-              {publications.map((c) => (
+              {publications.data.map((c) => (
                 <tr key={c.id} className="border-t">
 
                   <td className="p-3">

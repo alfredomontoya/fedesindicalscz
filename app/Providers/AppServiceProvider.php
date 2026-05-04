@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Publication;
 use App\Models\Role;
 use App\Models\User;
+use App\Policies\PublicationPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
 use Carbon\CarbonImmutable;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         Role::class => RolePolicy::class,
         User::class => UserPolicy::class,
+        Publication::class => PublicationPolicy::class,
     ];
 
     /**

@@ -3,130 +3,106 @@
 namespace App\Http\Controllers;
 
 use App\Models\Publication;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use App\Models\Institution;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
+use App\Http\Requests\StorePublicationRequest;
+use App\Http\Requests\UpdatePublicationRequest;
 
-class PublicationController extends BaseController
+class PublicationController extends Controller
 {
-
-    use AuthorizesRequests, ValidatesRequests;
-
     public function __construct()
     {
+        // Aplica automáticamente policies (view, create, update, delete, etc.)
         $this->authorizeResource(Publication::class, 'publication');
     }
+
     /**
      * Listado
      */
-    public function index()
+    public function index(Request $request): Response
     {
-        $query = Publication::with(['user', 'type_publication.institution'])
-            ->where('user_id', auth()->id());
-
-        // if (request('search')) {
-        //     $query->where('nombre', 'like', '%' . request('search') . '%');
-        // }
-
-        $publications = $query->latest()->get();
+        $publications = Publication::with([
+                'user:id,name',
+                'type_publication:id,nombre,institution_id',
+                'type_publication.institution:id,nombre'
+            ])
+            ->where('user_id', $request->user()->id)
+            ->search($request->input('search')) // scope en el modelo
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Publications/Index', [
+            'filters' => $request->only('search'),
             'publications' => $publications
         ]);
     }
 
     /**
-     * Formulario de creación (opcional si usas modal)
+     * Formulario de creación
      */
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('Publications/Create', [
-            'institutions' => \App\Models\Institution::select(['id', 'nombre'])->get(),
+            'institutions' => Institution::select(['id', 'nombre'])->get(),
         ]);
     }
 
     /**
      * Guardar
      */
-    public function store(Request $request)
+    public function store(StorePublicationRequest $request)
     {
-        $data = $request->validate([
-            'type_publication_id' => 'required|exists:type_publications,id',
-            'tratamiento' => 'required|in:Sr,Sra',
-            'nombre' => 'required|string|max:255',
-            'fecha_nacimiento' => 'required|date',
-            'fecha' => 'required|date',
+        Publication::create([
+            ...$request->validated(),
+            'user_id' => $request->user()->id,
         ]);
-
-        $data['user_id'] = auth()->id();
-
-        Publication::create($data);
 
         return redirect()
             ->route('publications.index')
-            ->with('success', 'Publicacion registrada correctamente');
+            ->with('success', 'Publicación registrada correctamente');
     }
 
     /**
-     * Mostrar (opcional)
+     * Mostrar
      */
-    public function show(Publication $publication)
+    public function show(Publication $publication): Response
     {
+        $publication->load([
+            'user:id,name',
+            'type_publication.institution:id,nombre'
+        ]);
+
         return Inertia::render('Publications/Show', [
             'publication' => $publication,
-        ]);
-    }
-
-    public function showApi($id)
-    {
-        $publication = Publication::with([
-            'user',
-            'type_publication.institution'
-        ])->findOrFail($id);
-
-        // 🔐 aplicar policy manualmente
-        $this->authorize('view', $publication);
-
-        return response()->json([
-            'data' => $publication
         ]);
     }
 
     /**
      * Formulario de edición
      */
-    public function edit(Publication $publication)
+    public function edit(Publication $publication): Response
     {
-        $this->authorizeUser($publication);
-
         return Inertia::render('Publications/Edit', [
-            'institutions' => \App\Models\Institution::select(['id', 'nombre'])->get(),
-            'publication' => $publication
+            'institutions' => Institution::select(['id', 'nombre'])->get(),
+            'publication' => $publication->load([
+                'type_publication.institution'
+            ])
         ]);
     }
 
     /**
      * Actualizar
      */
-    public function update(Request $request, Publication $publication)
+    public function update(UpdatePublicationRequest $request, Publication $publication)
     {
-        $this->authorizeUser($publication);
-
-        $data = $request->validate([
-            'type_publication_id' => 'required|exists:type_publications,id',
-            'tratamiento' => 'required|in:Sr,Sra',
-            'nombre' => 'required|string|max:255',
-            'fecha_nacimiento' => 'required|date',
-            'fecha' => 'required|date',
-        ]);
-
-        $publication->update($data);
+        $publication->update($request->validated());
 
         return redirect()
             ->route('publications.index')
-            ->with('success', 'Publicacion actualizada correctamente');
+            ->with('success', 'Publicación actualizada correctamente');
     }
 
     /**
@@ -134,22 +110,10 @@ class PublicationController extends BaseController
      */
     public function destroy(Publication $publication)
     {
-        $this->authorizeUser($publication);
-
         $publication->delete();
 
         return redirect()
             ->route('publications.index')
-            ->with('success', 'Publicacion eliminada correctamente');
-    }
-
-    /**
-     * Seguridad: validar que pertenece al usuario
-     */
-    private function authorizeUser(Publication $publication)
-    {
-        if ($publication->user_id !== auth()->id()) {
-            abort(403, 'No autorizado');
-        }
+            ->with('success', 'Publicación eliminada correctamente');
     }
 }

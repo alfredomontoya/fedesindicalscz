@@ -35,7 +35,7 @@ class UserController extends BaseController
                 });
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
 
         return Inertia::render('Users/Index', [
             'users' => $users,

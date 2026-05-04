@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             $user->roles()->attach($adminRole->id);
         }
 
-        User::factory(10)->create();
+        User::factory(50)->create();
 
         $this->call(InstitutionSeeder::class);
         $this->call(TypePublicationSeeder::class);
