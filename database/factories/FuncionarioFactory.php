@@ -26,7 +26,8 @@ class FuncionarioFactory extends Factory
             'cargo' => $this->faker->jobTitle(),
             'edificio' => $this->faker->randomElement($edificios),
             'tipo' => $this->faker->randomElement(['Item', 'Contrato']),
-            'listado_id' => Listado::all('id')->random(),
+            'listado_id' => Listado::factory(),
+            // 'listado_id' => Listado::all('id')->random(),
             'nro_lista' => $this->faker->numerify('###'),
         ];
     }

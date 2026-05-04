@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\TypePublicationController;
 use App\Http\Controllers\RoleController;
@@ -26,6 +27,10 @@ Route::resource('roles', RoleController::class)
     ->middleware(['auth'])
     ->names('roles');
 
+Route::resource('funcionarios', FuncionarioController::class)
+    ->middleware(['auth'])
+    ->names('funcionarios');
+
 Route::resource('users', \App\Http\Controllers\UserController::class)
     ->middleware(['auth', 'admin'])
     ->names('users');
@@ -41,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/api/publications/{id}', [PublicationController::class, 'showApi'])->middleware(['auth']);
+
 
 Route::middleware(['auth'])->group(function () {
     // Route::resource('cumples', CumpleController::class);
