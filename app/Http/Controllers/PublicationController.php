@@ -28,7 +28,7 @@ class PublicationController extends Controller
                 'type_publication:id,nombre,institution_id',
                 'type_publication.institution:id,nombre'
             ])
-            ->where('user_id', $request->user()->id)
+            // ->where('user_id', $request->user()->id)
             ->search($request->input('search')) // scope en el modelo
             ->latest()
             ->paginate(10)

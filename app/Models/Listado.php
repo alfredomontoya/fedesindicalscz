@@ -17,4 +17,13 @@ class Listado extends Model
 
     protected $table = 'listados';
 
+    /**
+     * Relations
+     */
+
+    public function funcionarios()
+    {
+        return $this->hasMany(Funcionario::class, 'listado_id');
+    }
+
 }

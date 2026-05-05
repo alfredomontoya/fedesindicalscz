@@ -2,12 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\Edificio;
+use App\Models\Funcionario;
+use App\Models\Listado;
 use App\Models\Publication;
+use App\Models\Responsable;
 use App\Models\Role;
+use App\Models\TypePublication;
 use App\Models\User;
+use App\Policies\FuncionarioPolicy;
+use App\Policies\ListadoPolicy;
 use App\Policies\PublicationPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\TypePublicationPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\ResponsablePolicy;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
         Role::class => RolePolicy::class,
         User::class => UserPolicy::class,
         Publication::class => PublicationPolicy::class,
+        TypePublication::class => TypePublicationPolicy::class,
+        Funcionario::class => FuncionarioPolicy::class,
+        Listado::class => ListadoPolicy::class,
+        Responsable::class => ResponsablePolicy::class,
+        // Edificio::class => EdificioPolicy::class,
     ];
 
     /**

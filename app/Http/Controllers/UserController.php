@@ -120,7 +120,7 @@ class UserController extends BaseController
     public function destroy(User $user)
     {
         $user->roles()->detach();
-        $user->delete();
+        // $user->delete();
 
         return redirect()->route('users.index')
             ->with('success', "Usuario '{$user->name}' eliminado correctamente.");

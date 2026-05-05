@@ -2,21 +2,21 @@ import { Head, router } from '@inertiajs/react';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Eye } from 'lucide-react';
-import type { TypePublication } from '@/types/type-publication';
 import Pagination from '@/components/Pagination';
 import { Paginated } from '@/types/Paginated';
+import { Listado } from '@/types/listado';
 
 export default function Index({
-  typePublications,
-  filters,
+  listados,
+  filters
 }: {
-  typePublications: Paginated<TypePublication>;
+  listados: Paginated<Listado>;
   filters: { search: string };
 }) {
 
   // 🔥 SPA STATE
-  const [rows, setRows] = useState(typePublications.data);
-  const [links, setLinks] = useState(typePublications.links);
+  const [rows, setRows] = useState(listados.data);
+  const [links, setLinks] = useState(listados.links);
   const [search, setSearch] = useState(filters.search || '');
   const [loading, setLoading] = useState(false);
 
@@ -26,14 +26,14 @@ export default function Index({
 
     setLoading(true);
 
-    router.get('/type-publications', { search }, {
+    router.get('/listados', { search }, {
       preserveState: true,
       replace: true,
       onSuccess: (page) => {
         const props = page.props as any;
 
-        setRows(props.typePublications.data);
-        setLinks(props.typePublications.links);
+        setRows(props.listados.data);
+        setLinks(props.listados.links);
       },
       onFinish: () => setLoading(false),
     });
@@ -41,11 +41,11 @@ export default function Index({
 
   // 🗑 DELETE
   const eliminar = (id: number) => {
-    if (!confirm('¿Eliminar tipo de publicación?')) return;
+    if (!confirm('¿Eliminar listado?')) return;
 
-    router.delete(`/type-publications/${id}`, {
+    router.delete(`/listados/${id}`, {
       onSuccess: () => {
-        setRows((prev) => prev.filter((t) => t.id !== id));
+        setRows((prev) => prev.filter((l) => l.id !== id));
       },
     });
   };
@@ -63,8 +63,8 @@ export default function Index({
       onSuccess: (page) => {
         const props = page.props as any;
 
-        setRows(props.typePublications.data);
-        setLinks(props.typePublications.links);
+        setRows(props.listados.data);
+        setLinks(props.listados.links);
       },
       onFinish: () => setLoading(false),
     });
@@ -72,18 +72,21 @@ export default function Index({
 
   return (
     <>
-      <Head title="Tipos de Publicación" />
+      <Head title="Listados" />
 
       <div className="p-6 relative">
 
         {/* HEADER */}
         <div className="flex justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Tipos de Publicación</h1>
+            <h1 className="text-2xl font-bold">Administrar Listados</h1>
+            <p className="text-sm text-gray-600">
+              Gestión de listados del sistema
+            </p>
           </div>
 
-          <Button onClick={() => router.visit('/type-publications/create')}>
-            Nuevo
+          <Button onClick={() => router.visit('/listados/create')}>
+            Nuevo Listado
           </Button>
         </div>
 
@@ -93,7 +96,7 @@ export default function Index({
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por nombre o institución"
+            placeholder="Buscar por nombre..."
             className="w-full rounded border px-3 py-2"
           />
           <Button type="submit">Buscar</Button>
@@ -110,9 +113,9 @@ export default function Index({
             <thead>
               <tr>
                 <th className="p-3 text-left">Nombre</th>
-                <th className="p-3 text-left">Institución</th>
-                <th className="p-3 text-left">Activo</th>
-                <th className="p-3 text-left">Creación</th>
+                <th className="p-3 text-left">Descripción</th>
+                <th className="p-3 text-center">Estado</th>
+                <th className="p-3">Creación</th>
                 <th className="p-3 text-center">Acciones</th>
               </tr>
             </thead>
@@ -121,39 +124,43 @@ export default function Index({
               {rows.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-6 text-center text-gray-400">
-                    No se encontraron registros
+                    No se encontraron listados
                   </td>
                 </tr>
               ) : (
-                rows.map((typePublication) => (
-                  <tr key={typePublication.id} className="border-t">
+                rows.map((listado) => (
+                  <tr key={listado.id} className="border-t">
 
-                    <td className="p-3 uppercase">
-                      {typePublication.nombre}
+                    <td className="p-3 font-medium">{listado.nombre}</td>
+
+                    <td className="p-3">
+                      {listado.descripcion || '—'}
+                    </td>
+
+                    <td className="p-3 text-center">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        listado.is_enable
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}>
+                        {listado.is_enable ? 'Activo' : 'Inactivo'}
+                      </span>
                     </td>
 
                     <td className="p-3">
-                      {typePublication.institution?.nombre ?? 'No definida'}
-                    </td>
-
-                    <td className="p-3">
-                      {typePublication.activo ? 'Sí' : 'No'}
-                    </td>
-
-                    <td className="p-3">
-                      {new Date(typePublication.created_at).toLocaleDateString()}
+                      {new Date(listado.created_at).toLocaleDateString()}
                     </td>
 
                     <td className="p-3 text-center space-x-2">
-                      <Button size="sm" onClick={() => router.visit(`/type-publications/${typePublication.id}`)}>
+                      <Button size="sm" onClick={() => router.visit(`/listados/${listado.id}`)}>
                         <Eye size={16} />
                       </Button>
 
-                      <Button size="sm" onClick={() => router.visit(`/type-publications/${typePublication.id}/edit`)}>
+                      <Button size="sm" onClick={() => router.visit(`/listados/${listado.id}/edit`)}>
                         <Pencil size={16} />
                       </Button>
 
-                      <Button size="sm" onClick={() => eliminar(typePublication.id)}>
+                      <Button size="sm" onClick={() => eliminar(listado.id)}>
                         <Trash2 size={16} />
                       </Button>
                     </td>
@@ -165,7 +172,7 @@ export default function Index({
           </table>
         </div>
 
-        {/* PAGINATION SPA */}
+        {/* PAGINATION */}
         <Pagination
           links={links}
           onChange={goToPage}
@@ -176,12 +183,3 @@ export default function Index({
     </>
   );
 }
-
-Index.layout = {
-  breadcrumbs: [
-    {
-      title: 'TypePublications',
-      href: '/type-publications',
-    },
-  ],
-};

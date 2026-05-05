@@ -23,6 +23,16 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
+        title: 'Funcionarios',
+        href: '/funcionarios',
+        icon: HeartHandshake,
+    },
+    {
+        title: 'Listados',
+        href: '/listados',
+        icon: HeartHandshake,
+    },
+    {
         title: 'Publicaciones',
         href: '/publications',
         icon: HeartHandshake,

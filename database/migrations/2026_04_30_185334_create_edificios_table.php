@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('responsable_edificios', function (Blueprint $table) {
+        Schema::create('edificios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('responsable_id')->constrained('responsables')->onDelete('cascade');
-            $table->foreignId('edificio_id')->constrained('edificios')->onDelete('cascade');
-            $table->string('edificio');
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('listado_id')->constrained('listados')->onDelete('cascade');
+            $table->string('nombre');
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('responsable_edificios');
+        Schema::dropIfExists('edificios');
     }
 };

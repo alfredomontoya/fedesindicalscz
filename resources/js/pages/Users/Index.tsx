@@ -4,19 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Eye } from 'lucide-react';
 import Pagination from '@/components/Pagination';
 import { Paginated } from '@/types/Paginated';
+import { User } from '@/types';
 
-interface Role {
-  id: number;
-  nombre: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  created_at: string;
-  roles: Role[];
-}
 
 export default function Index({
   users,

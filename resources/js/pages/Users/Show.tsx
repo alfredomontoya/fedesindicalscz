@@ -1,19 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface Role {
-  id: number;
-  nombre: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  created_at: string;
-  roles: Role[];
-}
+import { User } from '@/types';
 
 interface Props {
   user: User;

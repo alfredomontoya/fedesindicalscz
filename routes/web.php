@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FuncionarioController;
+use App\Http\Controllers\ListadoController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\TypePublicationController;
 use App\Http\Controllers\RoleController;
@@ -30,6 +31,10 @@ Route::resource('roles', RoleController::class)
 Route::resource('funcionarios', FuncionarioController::class)
     ->middleware(['auth'])
     ->names('funcionarios');
+
+Route::resource('listados', ListadoController::class)
+    ->middleware(['auth'])
+    ->names('listados');
 
 Route::resource('users', \App\Http\Controllers\UserController::class)
     ->middleware(['auth', 'admin'])

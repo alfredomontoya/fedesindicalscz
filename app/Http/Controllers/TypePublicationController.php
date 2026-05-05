@@ -14,6 +14,13 @@ class TypePublicationController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    public function __construct()
+    {
+        if (!app()->runningInConsole()) {
+            $this->authorizeResource(TypePublication::class, 'type_publication');
+        }
+    }
+
     /**
      * Listado de tipos de publicación.
      */

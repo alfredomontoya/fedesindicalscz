@@ -27,7 +27,7 @@ export default function Pagination({ links, onChange, loading }: Props) {
   return (
     <div className="mt-4 flex flex-wrap gap-2 justify-center relative">
       {loading && (
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-sm rounded" />
+        <div className="absolute inset-0 bg-background/40 backdrop-blur-sm rounded" />
       )}
 
       {links.map((link, index) => {

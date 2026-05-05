@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Asignar rol de admin al usuario
-        $adminRole = Role::where('nombre', 'admin')->first();
+        $adminRole = Role::firstWhere('nombre', 'admin');
         if ($adminRole) {
             $user->roles()->attach($adminRole->id);
         }

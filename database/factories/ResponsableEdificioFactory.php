@@ -20,7 +20,8 @@ class ResponsableEdificioFactory extends Factory
         $edificios = ['Edificio A', 'Edificio B', 'Edificio C', 'Edificio D', 'Edificio E', 'Edificio F', 'Edificio G', 'Edificio H', 'Edificio I', 'Edificio J'];
         return [
             //
-            'responsable_id' => \App\Models\Responsable::factory(),
+            // 'responsable_id' => \App\Models\Responsable::factory(),
+            'responsable_id' => \App\Models\Responsable::all('id')->random(),
             'edificio' => $this->faker->randomElement($edificios),
             // 'is_active' => $this->faker->boolean(),
         ];

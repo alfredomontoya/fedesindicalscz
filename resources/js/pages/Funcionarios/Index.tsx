@@ -2,21 +2,23 @@ import { Head, router } from '@inertiajs/react';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Eye } from 'lucide-react';
-import type { TypePublication } from '@/types/type-publication';
-import Pagination from '@/components/Pagination';
 import { Paginated } from '@/types/Paginated';
+import Pagination from '@/components/Pagination';
+import { Input } from '@/components/ui/input';
+import { Funcionario } from '@/types/funcionario';
+
 
 export default function Index({
-  typePublications,
+  funcionarios,
   filters,
 }: {
-  typePublications: Paginated<TypePublication>;
+  funcionarios: Paginated<Funcionario>;
   filters: { search: string };
 }) {
 
   // 🔥 SPA STATE
-  const [rows, setRows] = useState(typePublications.data);
-  const [links, setLinks] = useState(typePublications.links);
+  const [rows, setRows] = useState(funcionarios.data);
+  const [links, setLinks] = useState(funcionarios.links);
   const [search, setSearch] = useState(filters.search || '');
   const [loading, setLoading] = useState(false);
 
@@ -26,14 +28,14 @@ export default function Index({
 
     setLoading(true);
 
-    router.get('/type-publications', { search }, {
+    router.get('/funcionarios', { search }, {
       preserveState: true,
       replace: true,
       onSuccess: (page) => {
         const props = page.props as any;
 
-        setRows(props.typePublications.data);
-        setLinks(props.typePublications.links);
+        setRows(props.funcionarios.data);
+        setLinks(props.funcionarios.links);
       },
       onFinish: () => setLoading(false),
     });
@@ -41,11 +43,11 @@ export default function Index({
 
   // 🗑 DELETE
   const eliminar = (id: number) => {
-    if (!confirm('¿Eliminar tipo de publicación?')) return;
+    if (!confirm('¿Eliminar funcionario?')) return;
 
-    router.delete(`/type-publications/${id}`, {
+    router.delete(`/funcionarios/${id}`, {
       onSuccess: () => {
-        setRows((prev) => prev.filter((t) => t.id !== id));
+        setRows((prev) => prev.filter((f) => f.id !== id));
       },
     });
   };
@@ -63,8 +65,8 @@ export default function Index({
       onSuccess: (page) => {
         const props = page.props as any;
 
-        setRows(props.typePublications.data);
-        setLinks(props.typePublications.links);
+        setRows(props.funcionarios.data);
+        setLinks(props.funcionarios.links);
       },
       onFinish: () => setLoading(false),
     });
@@ -72,29 +74,26 @@ export default function Index({
 
   return (
     <>
-      <Head title="Tipos de Publicación" />
+      <Head title="Funcionarios" />
 
       <div className="p-6 relative">
 
         {/* HEADER */}
         <div className="flex justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">Tipos de Publicación</h1>
-          </div>
+          <h1 className="text-2xl font-bold">Funcionarios</h1>
 
-          <Button onClick={() => router.visit('/type-publications/create')}>
+          <Button onClick={() => router.visit('/funcionarios/create')}>
             Nuevo
           </Button>
         </div>
 
         {/* SEARCH */}
         <form onSubmit={submit} className="flex gap-2 mb-6">
-          <input
+          <Input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por nombre o institución"
-            className="w-full rounded border px-3 py-2"
+            placeholder="Buscar por nombre, CI, cargo o edificio"
           />
           <Button type="submit">Buscar</Button>
         </form>
@@ -110,8 +109,11 @@ export default function Index({
             <thead>
               <tr>
                 <th className="p-3 text-left">Nombre</th>
-                <th className="p-3 text-left">Institución</th>
-                <th className="p-3 text-left">Activo</th>
+                <th className="p-3 text-left">CI</th>
+                <th className="p-3 text-left">Cargo</th>
+                <th className="p-3 text-left">Edificio</th>
+                <th className="p-3 text-left">Tipo</th>
+                <th className="p-3 text-left">Listado</th>
                 <th className="p-3 text-left">Creación</th>
                 <th className="p-3 text-center">Acciones</th>
               </tr>
@@ -120,40 +122,57 @@ export default function Index({
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-6 text-center text-gray-400">
+                  <td colSpan={8} className="p-6 text-center text-gray-400">
                     No se encontraron registros
                   </td>
                 </tr>
               ) : (
-                rows.map((typePublication) => (
-                  <tr key={typePublication.id} className="border-t">
+                rows.map((f) => (
+                  <tr key={f.id} className="border-t">
 
-                    <td className="p-3 uppercase">
-                      {typePublication.nombre}
+                    <td className="p-3 font-medium capitalize">
+                      {f.nombre}
                     </td>
 
                     <td className="p-3">
-                      {typePublication.institution?.nombre ?? 'No definida'}
+                      {f.ci}
                     </td>
 
                     <td className="p-3">
-                      {typePublication.activo ? 'Sí' : 'No'}
+                      {f.cargo}
                     </td>
 
                     <td className="p-3">
-                      {new Date(typePublication.created_at).toLocaleDateString()}
+                      {f.edificio}
+                    </td>
+
+                    <td className="p-3">
+                      {f.tipo}
+                    </td>
+
+                    <td className="p-3">
+                      {f.listado?.nombre ?? 'Sin listado'}
+                      {f.nro_lista && (
+                        <div className="text-xs text-gray-500">
+                          N° {f.nro_lista}
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="p-3">
+                      {new Date(f.created_at).toLocaleDateString()}
                     </td>
 
                     <td className="p-3 text-center space-x-2">
-                      <Button size="sm" onClick={() => router.visit(`/type-publications/${typePublication.id}`)}>
+                      <Button size="sm" onClick={() => router.visit(`/funcionarios/${f.id}`)}>
                         <Eye size={16} />
                       </Button>
 
-                      <Button size="sm" onClick={() => router.visit(`/type-publications/${typePublication.id}/edit`)}>
+                      <Button size="sm" onClick={() => router.visit(`/funcionarios/${f.id}/edit`)}>
                         <Pencil size={16} />
                       </Button>
 
-                      <Button size="sm" onClick={() => eliminar(typePublication.id)}>
+                      <Button size="sm" onClick={() => eliminar(f.id)}>
                         <Trash2 size={16} />
                       </Button>
                     </td>
@@ -180,8 +199,8 @@ export default function Index({
 Index.layout = {
   breadcrumbs: [
     {
-      title: 'TypePublications',
-      href: '/type-publications',
+      title: 'Funcionarios',
+      href: '/funcionarios',
     },
   ],
 };
