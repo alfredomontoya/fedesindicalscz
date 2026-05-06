@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('responsable_id')->constrained('responsables')->onDelete('cascade');
             $table->foreignId('edificio_id')->constrained('edificios')->onDelete('cascade');
-            $table->string('edificio');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

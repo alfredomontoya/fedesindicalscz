@@ -14,13 +14,14 @@ class ResponsableEdificioSeeder extends Seeder
     public function run(): void
     {
         //
-        $edificios = ['Edificio A', 'Edificio B', 'Edificio C', 'Edificio D', 'Edificio E', 'Edificio F', 'Edificio G', 'Edificio H', 'Edificio I', 'Edificio J'];
-        foreach(Responsable::all() as $responsable) {
-            \App\Models\ResponsableEdificio::factory()->create([
-                'responsable_id' => $responsable->id,
-                'edificio' => $edificios[array_rand($edificios)],
-            ]);
-         }
+        // $edificios = ['Edificio A', 'Edificio B', 'Edificio C', 'Edificio D', 'Edificio E', 'Edificio F', 'Edificio G', 'Edificio H', 'Edificio I', 'Edificio J'];
+        // foreach(Responsable::all() as $responsable) {
+        //     \App\Models\ResponsableEdificio::factory()->create([
+        //         'responsable_id' => $responsable->id,
+        //         'edificio' => $edificios[array_rand($edificios)],
+        //     ]);
+        //  }
+        Edificio::factory(10)->Create();
 
     }
 }

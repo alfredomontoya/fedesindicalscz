@@ -17,12 +17,12 @@ class ResponsableEdificioFactory extends Factory
      */
     public function definition(): array
     {
-        $edificios = ['Edificio A', 'Edificio B', 'Edificio C', 'Edificio D', 'Edificio E', 'Edificio F', 'Edificio G', 'Edificio H', 'Edificio I', 'Edificio J'];
+        // $edificios = ['Edificio A', 'Edificio B', 'Edificio C', 'Edificio D', 'Edificio E', 'Edificio F', 'Edificio G', 'Edificio H', 'Edificio I', 'Edificio J'];
         return [
             //
             // 'responsable_id' => \App\Models\Responsable::factory(),
             'responsable_id' => \App\Models\Responsable::all('id')->random(),
-            'edificio' => $this->faker->randomElement($edificios),
+            'edificio_id' => \App\Models\Edificio:all('id')->random(),
             // 'is_active' => $this->faker->boolean(),
         ];
     }
