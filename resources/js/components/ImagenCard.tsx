@@ -9,8 +9,6 @@ type Props = {
 const ImagenCard = forwardRef<HTMLDivElement, Props>(
   ({ publication, orientation }, ref) => {
 
-    console.log('ImagenCard renderizado');
-    console.log(publication);
     const isVertical = orientation === 'vertical';
 
     // 🔥 DIMENSIONES REALES (NO CAMBIAR)
@@ -27,6 +25,8 @@ const ImagenCard = forwardRef<HTMLDivElement, Props>(
         fontsize_vertical: Number(publication.type_publication?.fontsize_vertical),
         fontsize_horizontal: Number(publication.type_publication?.fontsize_horizontal),
     }
+
+
 
     const image_src = `${window.location.origin}/images/${publication.type_publication?.institution?.prefix}-${publication.type_publication?.nombre.split(' ')[0]}-${isVertical?'vertical':'horizontal'}.png`
 
@@ -82,10 +82,11 @@ const ImagenCard = forwardRef<HTMLDivElement, Props>(
           {/* 🔤 NOMBRE */}
           <h1
             style={{
-              fontFamily: 'Anton, sans-serif',
+              fontFamily: '"Bukhari Script", cursive',
               fontSize: `${(isVertical) ? current.fontsize_vertical : current.fontsize_horizontal}px`,
-              fontWeight: 900,
-              color: '#333',
+              fontWeight: 400,
+              textTransform: 'capitalize',
+              color: '#000',
               margin: 0,
               lineHeight: 1.1,
               textShadow: `

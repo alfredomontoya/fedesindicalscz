@@ -27,6 +27,7 @@ class PublicationResource extends JsonResource
                 'institution' => [
                     'id' => $this->type_publication?->institution?->id,
                     'nombre' => $this->type_publication?->institution?->nombre,
+                    'prefix' => $this->type_publication?->institution?->prefix,
                 ]
             ],
         ];

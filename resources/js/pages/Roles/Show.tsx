@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import AppShell from '@/components/app-shell';
+import {AppShell} from '@/components/app-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Breadcrumbs from '@/components/breadcrumbs';
+import {Breadcrumbs} from '@/components/breadcrumbs';
 import { ArrowLeft } from 'lucide-react';
 
 interface User {
@@ -32,7 +32,7 @@ interface Props {
   role: Role;
 }
 
-export default function RoleShow({ role }: Props) {
+export default function Show({ role }: Props) {
   const breadcrumbs = [
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Roles', href: '/roles' },
@@ -55,7 +55,7 @@ export default function RoleShow({ role }: Props) {
     <AppShell>
       <Head title={`Rol: ${role.nombre}`} />
       <div className="space-y-4">
-        <Breadcrumbs items={breadcrumbs} />
+        {/* <Breadcrumbs items={breadcrumbs} /> */}
 
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">{role.nombre}</h1>
@@ -136,3 +136,12 @@ export default function RoleShow({ role }: Props) {
     </AppShell>
   );
 }
+
+Show.layout = {
+  breadcrumbs: [
+    {
+      title: 'Roles',
+      href: '/roles',
+    },
+  ],
+};

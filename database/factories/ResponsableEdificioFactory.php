@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Edificio;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,7 @@ class ResponsableEdificioFactory extends Factory
             //
             // 'responsable_id' => \App\Models\Responsable::factory(),
             'responsable_id' => \App\Models\Responsable::all('id')->random(),
-            'edificio_id' => \App\Models\Edificio:all('id')->random(),
+            'edificio_id' => Edificio::all('id')->random(),
             // 'is_active' => $this->faker->boolean(),
         ];
     }

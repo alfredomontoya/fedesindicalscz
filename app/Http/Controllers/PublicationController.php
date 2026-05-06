@@ -25,8 +25,8 @@ class PublicationController extends Controller
     {
         $publications = Publication::with([
                 'user:id,name',
-                'type_publication:id,nombre,institution_id',
-                'type_publication.institution:id,nombre'
+                'type_publication',
+                'type_publication.institution'
             ])
             // ->where('user_id', $request->user()->id)
             ->search($request->input('search')) // scope en el modelo
@@ -72,7 +72,7 @@ class PublicationController extends Controller
     {
         $publication->load([
             'user:id,name',
-            'type_publication.institution:id,nombre'
+            'type_publication.institution'
         ]);
 
         return Inertia::render('Publications/Show', [

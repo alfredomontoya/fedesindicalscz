@@ -19,6 +19,10 @@ export default function ModalGenerarImagen({
   onClose,
 }: Props) {
 
+    console.log('ModalGenerarImagen renderizado');
+    console.log(data);
+    console.log(orientation);
+
   const previewRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -68,34 +72,7 @@ export default function ModalGenerarImagen({
   const [hovered, setHovered] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchPublication = async () => {
-            try {
-            setLoading(true);
-
-            const res = await fetch(`/api/publications/${data.id}`, {
-                credentials: 'include',
-                headers: {
-                Accept: 'application/json',
-                },
-            });
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                console.error('ERROR BACKEND:', errorText);
-                throw new Error('Error al cargar publicación');
-            }
-
-            const json = await res.json();
-            setPublication(json.data);
-
-            } catch (error) {
-            console.error('Error cargando publication:', error);
-            } finally {
-            setLoading(false);
-            }
-        };
-
-        fetchPublication();
+       setPublication(data);
     }, [data.id]);
 
   // 🔥 ESC para cerrar

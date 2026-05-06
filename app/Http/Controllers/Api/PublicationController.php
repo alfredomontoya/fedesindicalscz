@@ -53,6 +53,11 @@ class PublicationController extends Controller
      */
     public function show(Publication $publication)
     {
+        $pub = new PublicationResource($publication->load([
+            'user:id,name',
+            'type_publication.institution:id,nombre'
+        ]));
+        dd($pub);
         return new PublicationResource(
             $publication->load([
                 'user:id,name',
