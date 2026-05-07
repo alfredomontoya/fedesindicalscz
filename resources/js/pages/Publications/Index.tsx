@@ -6,6 +6,7 @@ import ModalGenerarImagen from '@/components/ModalGenerarImagen';
 import { Publication } from '@/types/publication';
 import { Paginated } from '@/types/Paginated';
 import Pagination from '@/components/Pagination';
+import { Input } from '@/components/ui/input';
 
 export default function Index({
   publications,
@@ -97,12 +98,11 @@ export default function Index({
 
         {/* SEARCH */}
         <form onSubmit={submit} className="flex gap-2 mb-6">
-          <input
+          <Input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre o tipo"
-            className="w-full rounded border px-3 py-2"
           />
           <Button type="submit">Buscar</Button>
         </form>
