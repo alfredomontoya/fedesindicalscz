@@ -23,8 +23,16 @@ class PublicationPolicy
         return $user && $user->id === $publication->user_id;
     }
 
+    // /**
+    //  * Store
+    //  */
+    // public function store(Publication $publication): bool
+    // {
+    //     return true;
+    // }
+
     /**
-     * Crear
+     * Create
      */
     public function create(User $user): bool
     {

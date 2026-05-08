@@ -5,6 +5,7 @@ use App\Http\Controllers\ListadoController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\TypePublicationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -61,6 +62,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('roles/{role}/remove', [RoleController::class, 'removeRole'])
         ->name('roles.remove');
+});
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/settings/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/settings/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/settings/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
 
 require __DIR__.'/settings.php';

@@ -16,21 +16,19 @@ import {
 import { Button } from '@/components/ui/button';
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-import {
   RectangleHorizontal,
   RectangleVertical,
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
 
-export default function Create() {
+type Props = {
+  typePublications: any[];
+};
+
+export default function Create({
+  typePublications,
+}: Props) {
 
   const [orientation, setOrientation] = useState<
     'vertical' | 'horizontal'
@@ -38,36 +36,32 @@ export default function Create() {
 
   const [zoom, setZoom] = useState(0.18);
 
+  const firstType =
+    typePublications?.[0] || null;
+
   // 🔥 PREVIEW EN TIEMPO REAL
-  const [previewData, setPreviewData] = useState<any>({
-    institution_id: '1',
-    type_publication_id: '1',
+  const [previewData, setPreviewData] =
+    useState<any>({
+      institution_id:
+        firstType?.institution_id
+          ? String(firstType.institution_id)
+          : '1',
 
-    tratamiento: 'Sr',
+      type_publication_id:
+        firstType?.id
+          ? String(firstType.id)
+          : '1',
 
-    nombre: '',
+      tratamiento: 'Sr',
 
-    fecha: new Date()
-      .toISOString()
-      .split('T')[0],
+      nombre: '',
 
-    type_publication: {
-      nombre: 'Condolencia',
+      fecha: new Date()
+        .toISOString()
+        .split('T')[0],
 
-      top_vertical: 850,
-      top_horizontal: 900,
-
-      fechaBottom_vertical: 150,
-      fechaBottom_horizontal: 180,
-
-      fontsize_vertical: 120,
-      fontsize_horizontal: 140,
-
-      institution: {
-        prefix: 'fstmb',
-      },
-    },
-  });
+      type_publication: firstType,
+    });
 
   const realWidth =
     orientation === 'vertical'
@@ -86,7 +80,7 @@ export default function Create() {
 
   return (
     <>
-      <Head title="Nueva Publicacion" />
+      <Head title="Nueva Publicación" />
 
       <div className="p-6">
 
@@ -97,7 +91,7 @@ export default function Create() {
             Nueva publicación
           </h1>
 
-          {/* ORIENTACION */}
+          {/* ORIENTACIÓN */}
           <div className="flex items-center gap-2">
 
             <Button
@@ -131,14 +125,7 @@ export default function Create() {
         </div>
 
         {/* GRID */}
-        <div
-          className="
-            grid
-            grid-cols-1
-            2xl:grid-cols-[420px_1fr]
-            gap-6
-          "
-        >
+        <div className="grid grid-cols-1 2xl:grid-cols-[420px_1fr] gap-6">
 
           {/* FORM */}
           <Card className="h-fit">
@@ -156,6 +143,9 @@ export default function Create() {
                 method="post"
                 previewData={previewData}
                 setPreviewData={setPreviewData}
+                typePublications={
+                  typePublications
+                }
               />
 
             </CardContent>
@@ -211,11 +201,7 @@ export default function Create() {
             </CardHeader>
 
             <CardContent
-              className="
-                p-4
-                bg-muted/20
-                overflow-auto
-              "
+              className="p-4 bg-muted/20 overflow-auto"
               style={{
                 height: 'calc(100vh - 220px)',
               }}
@@ -248,7 +234,8 @@ export default function Create() {
                   <div
                     style={{
                       transform: `scale(${zoom})`,
-                      transformOrigin: 'top left',
+                      transformOrigin:
+                        'top left',
                       width: realWidth,
                       height: realHeight,
                     }}

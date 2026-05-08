@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\StorePublicationRequest;
 use App\Http\Requests\UpdatePublicationRequest;
+use App\Models\TypePublication;
 
 class PublicationController extends Controller
 {
@@ -46,7 +47,14 @@ class PublicationController extends Controller
     public function create(): Response
     {
         return Inertia::render('Publications/Create', [
-            'institutions' => Institution::select(['id', 'nombre'])->get(),
+            'institutions' => Institution::select([
+            'id',
+            'nombre'
+            ])->get(),
+
+            'typePublications' => TypePublication::with(
+                'institution'
+            )->get(),
         ]);
     }
 

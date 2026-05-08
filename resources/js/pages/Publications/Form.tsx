@@ -30,6 +30,8 @@ type Props = {
   setPreviewData: React.Dispatch<
     React.SetStateAction<any>
   >;
+
+  typePublications: any[];
 };
 
 export default function Form({
@@ -38,7 +40,11 @@ export default function Form({
   method = 'post',
   previewData,
   setPreviewData,
+  typePublications,
 }: Props) {
+
+  const firstType =
+    typePublications?.[0] || null;
 
   const {
     data,
@@ -50,10 +56,12 @@ export default function Form({
   } = useForm({
 
     institution_id:
-      initialData?.institution_id || '1',
+      initialData?.institution_id ||
+      String(firstType?.institution_id || '1'),
 
     type_publication_id:
-      initialData?.type_publication_id || '1',
+      initialData?.type_publication_id ||
+      String(firstType?.id || '1'),
 
     tratamiento:
       initialData?.tratamiento || 'Sr',
@@ -79,6 +87,37 @@ export default function Form({
 
     setData(field as any, value);
 
+    // 🔥 TYPE PUBLICATION
+    if (
+      field === 'type_publication_id'
+    ) {
+
+      const selectedType =
+        typePublications.find(
+          (item) =>
+            String(item.id) ===
+            String(value)
+        );
+
+      setPreviewData((prev: any) => ({
+        ...prev,
+
+        type_publication_id:
+          value,
+
+        institution_id:
+          String(
+            selectedType?.institution_id
+          ),
+
+        type_publication:
+          selectedType,
+      }));
+
+      return;
+    }
+
+    // 🔥 DEFAULT
     setPreviewData((prev: any) => ({
       ...prev,
       [field]: value,
@@ -101,49 +140,6 @@ export default function Form({
       onSubmit={submit}
       className="space-y-5"
     >
-
-      {/* INSTITUCION */}
-      <div>
-
-        <Label className="mb-2 block">
-          Institución
-        </Label>
-
-        <Select
-          value={String(data.institution_id)}
-          onValueChange={(value) =>
-            setField(
-              'institution_id',
-              value
-            )
-          }
-        >
-
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccione institución" />
-          </SelectTrigger>
-
-          <SelectContent>
-
-            <SelectItem value="1">
-              Federación
-            </SelectItem>
-
-            <SelectItem value="2">
-              Sindicato
-            </SelectItem>
-
-          </SelectContent>
-
-        </Select>
-
-        {errors.institution_id && (
-          <div className="text-red-500 text-sm mt-1">
-            {errors.institution_id}
-          </div>
-        )}
-
-      </div>
 
       {/* TIPO */}
       <div>
@@ -170,13 +166,18 @@ export default function Form({
 
           <SelectContent>
 
-            <SelectItem value="1">
-              Condolencia
-            </SelectItem>
+            {typePublications.map(
+              (item) => (
 
-            <SelectItem value="2">
-              Cumpleaños
-            </SelectItem>
+                <SelectItem
+                  key={item.id}
+                  value={String(item.id)}
+                >
+                  {item.nombre}
+                </SelectItem>
+
+              )
+            )}
 
           </SelectContent>
 
@@ -184,7 +185,9 @@ export default function Form({
 
         {errors.type_publication_id && (
           <div className="text-red-500 text-sm mt-1">
-            {errors.type_publication_id}
+            {
+              errors.type_publication_id
+            }
           </div>
         )}
 
@@ -284,7 +287,7 @@ export default function Form({
 
       </div>
 
-      {/* BOTON */}
+      {/* BOTÓN */}
       <Button
         type="submit"
         disabled={processing}

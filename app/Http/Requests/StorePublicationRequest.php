@@ -12,7 +12,7 @@ class StorePublicationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check(); // Solo usuarios autenticados pueden crear publicaciones
     }
 
     /**
@@ -26,7 +26,7 @@ class StorePublicationRequest extends FormRequest
             'type_publication_id' => 'required|exists:type_publications,id',
             'tratamiento' => 'required|in:Sr,Sra',
             'nombre' => 'required|string|max:255',
-            'fecha_nacimiento' => 'required|date',
+            'fecha_nacimiento' => 'nullable|date',
             'fecha' => 'required|date',
         ];
     }

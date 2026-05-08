@@ -75,143 +75,143 @@ export default function ModalGenerarImagen({
        setPublication(data);
     }, [data.id]);
 
-  // 🔥 ESC para cerrar
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    // 🔥 ESC para cerrar
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+        };
+
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [onClose]);
+
+    // 🔥 esperar fuentes
+    const waitForFonts = async () => {
+        if ((document as any).fonts) {
+        await (document as any).fonts.ready;
+        }
     };
 
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
+    // 🔥 esperar imágenes
+    const waitForImages = async (element: HTMLElement) => {
+        const images = element.querySelectorAll('img');
 
-  // 🔥 esperar fuentes
-  const waitForFonts = async () => {
-    if ((document as any).fonts) {
-      await (document as any).fonts.ready;
-    }
-  };
+        await Promise.all(
+        Array.from(images).map((img) => {
+            if (img.complete) return Promise.resolve();
 
-  // 🔥 esperar imágenes
-  const waitForImages = async (element: HTMLElement) => {
-    const images = element.querySelectorAll('img');
-
-    await Promise.all(
-      Array.from(images).map((img) => {
-        if (img.complete) return Promise.resolve();
-
-        return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = resolve;
-        });
-      })
-    );
-  };
-
-  // 📥 DESCARGAR
-  const generar = async () => {
-    if (!exportRef.current) return;
-
-    const scale = Math.min(window.devicePixelRatio || 1, 2);
-
-    try {
-      await waitForFonts();
-      await waitForImages(exportRef.current);
-
-      const canvas = await html2canvas(exportRef.current, {
-        scale,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-      });
-
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-
-      link.download = `${data.type_publication?.institution?.prefix ?? 'doc'}-${
-        data.type_publication?.nombre?.split(' ')[0] ?? 'tipo'
-      }-${orientation}.png`;
-
-      link.click();
-
-    } catch (error) {
-      console.error('Error generando imagen:', error);
-    }
-  };
-
-  // 📱 WHATSAPP
-  const compartirWhatsApp = async () => {
-    if (!exportRef.current) return;
-
-    const scale = Math.min(window.devicePixelRatio || 1, 2);
-
-    try {
-      await waitForFonts();
-      await waitForImages(exportRef.current);
-
-      const canvas = await html2canvas(exportRef.current, {
-        scale,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-      });
-
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, 'image/png')
-      );
-
-      if (!blob) return;
-
-      const file = new File([blob], `imagen.png`, {
-        type: 'image/png',
-      });
-
-      const whatsappText = `Publicación de ${data.tratamiento} ${data.nombre}`;
-
-      if (navigator.share) {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              files: [file],
-              title: 'Publicación',
-              text: whatsappText,
+            return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
             });
-            return;
-          } catch (error) {
-            console.warn('Web Share con archivo no soportado:', error);
-          }
-        }
+        })
+        );
+    };
+
+    // 📥 DESCARGAR
+    const generar = async () => {
+        if (!exportRef.current) return;
+
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
 
         try {
-          await navigator.share({
-            title: 'Publicación',
-            text: whatsappText,
-          });
-          return;
+        await waitForFonts();
+        await waitForImages(exportRef.current);
+
+        const canvas = await html2canvas(exportRef.current, {
+            scale,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+        });
+
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+
+        link.download = `${data.type_publication?.institution?.prefix ?? 'doc'}-${
+            data.type_publication?.nombre?.split(' ')[0] ?? 'tipo'
+        }-${orientation}.png`;
+
+        link.click();
+
         } catch (error) {
-          console.warn('Web Share solo texto no soportado:', error);
+        console.error('Error generando imagen:', error);
         }
-      }
+    };
 
-      const encodedText = encodeURIComponent(whatsappText);
-      const mobileLink = `whatsapp://send?text=${encodedText}`;
-      const webLink = `https://wa.me/?text=${encodedText}`;
+    // 📱 WHATSAPP
+    const compartirWhatsApp = async () => {
+        if (!exportRef.current) return;
 
-      if (/Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        window.location.href = mobileLink;
-      } else {
-        window.open(webLink, '_blank');
-      }
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
 
-    } catch (error) {
-      console.error('Error compartiendo:', error);
-    }
-  };
+        try {
+        await waitForFonts();
+        await waitForImages(exportRef.current);
 
-  // ❌ cerrar click fuera
-  const handleOutsideClick = (e: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      onClose();
-    }
-  };
+        const canvas = await html2canvas(exportRef.current, {
+            scale,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+        });
+
+        const blob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/png')
+        );
+
+        if (!blob) return;
+
+        const file = new File([blob], `imagen.png`, {
+            type: 'image/png',
+        });
+
+        const whatsappText = `Publicación de ${data.tratamiento} ${data.nombre}`;
+
+        if (navigator.share) {
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                files: [file],
+                title: 'Publicación',
+                text: whatsappText,
+                });
+                return;
+            } catch (error) {
+                console.warn('Web Share con archivo no soportado:', error);
+            }
+            }
+
+            try {
+            await navigator.share({
+                title: 'Publicación',
+                text: whatsappText,
+            });
+            return;
+            } catch (error) {
+            console.warn('Web Share solo texto no soportado:', error);
+            }
+        }
+
+        const encodedText = encodeURIComponent(whatsappText);
+        const mobileLink = `whatsapp://send?text=${encodedText}`;
+        const webLink = `https://wa.me/?text=${encodedText}`;
+
+        if (/Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            window.location.href = mobileLink;
+        } else {
+            window.open(webLink, '_blank');
+        }
+
+        } catch (error) {
+        console.error('Error compartiendo:', error);
+        }
+    };
+
+    // ❌ cerrar click fuera
+    const handleOutsideClick = (e: React.MouseEvent) => {
+        if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        onClose();
+        }
+    };
 
   return (
     <div
