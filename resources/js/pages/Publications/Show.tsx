@@ -1,29 +1,16 @@
 import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Funcionario } from '@/types/funcionario';
 
-interface Listado {
-  id: number;
-  nombre: string;
-}
 
-interface Funcionario {
-  id: number;
-  nombre: string;
-  ci: string;
-  nro_lista: string;
-  cargo?: string | null;
-  edificio?: string | null;
-  tipo: 'item' | 'contrato';
-  created_at: string;
-  listado?: Listado;
-}
 
 interface Props {
   funcionario: Funcionario;
 }
 
 export default function Show({ funcionario }: Props) {
+    console.log(funcionario);
   return (
     <>
       <Head title={`Funcionario: ${funcionario.nombre}`} />
