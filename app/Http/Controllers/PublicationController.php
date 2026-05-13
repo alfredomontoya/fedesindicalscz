@@ -78,6 +78,7 @@ class PublicationController extends Controller
      */
     public function show(Publication $publication): Response
     {
+
         $publication->load([
             'user:id,name',
             'type_publication.institution'
